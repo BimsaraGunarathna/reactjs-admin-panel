@@ -30,11 +30,7 @@ function App() {
           Learn React
         </a>
       </header>
-      <Button variant="contained" color="primary">
-        Hello World
-      </Button>
-      <DatePicker placeholder="select date" />
-      <SignIn/>
+      
       <MainDashboardPage />
     </div>
   );
