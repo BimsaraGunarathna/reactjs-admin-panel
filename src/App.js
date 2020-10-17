@@ -2,6 +2,17 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+//Pages
+import SignIn from './pages/SignInPage.js';
+import MainDashboardPage from './pages/MainDashboardPage.js';
+
+//AntD
+import { DatePicker } from 'antd';
+
+//material-ui
+import Button from '@material-ui/core/Button';
+
+
 function App() {
   return (
     <div className="App">
@@ -19,6 +30,12 @@ function App() {
           Learn React
         </a>
       </header>
+      <Button variant="contained" color="primary">
+        Hello World
+      </Button>
+      <DatePicker placeholder="select date" />
+      <SignIn/>
+      <MainDashboardPage />
     </div>
   );
 }
