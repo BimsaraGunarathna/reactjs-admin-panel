@@ -4,18 +4,30 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
+//react router
+import { BrowserRouter } from "react-router-dom";
+
 //redux
 import { Provider } from "react-redux";
-import {store} from './redux/Store';
+import {store, persistor} from './redux/Store';
+
+//redux persist
+import { PersistGate } from 'redux-persist/lib/integration/react';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
+    <PersistGate persistor={persistor}>
+      <Provider store={store}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </Provider>
+    </PersistGate>
   </React.StrictMode>,
   document.getElementById('root')
 );
+
+window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
