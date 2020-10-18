@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { Component } from "react";
 import clsx from 'clsx';
-
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
@@ -17,13 +16,24 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
+import PropTypes from "prop-types";
+import { withStyles } from "@material-ui/core/styles";
+//
+import { mainListItems, secondaryListItems } from '../../components/ListItems';
+import Chart from '../../components/Chart';
+import Deposits from '../../components/Deposits';
+import Orders from '../../components/Orders';
 
-import { mainListItems, secondaryListItems } from '../components/ListItems';
-import Chart from '../components/Chart';
-import Deposits from '../components/Deposits';
-import Orders from '../components/Orders';
+//
+//redux
+import { connect } from 'react-redux';
+
+//react-router-dom
+import { withRouter, Redirect } from "react-router-dom";
+import { SIGN_UP_PAGE } from "../../routes/RouteConstants";
 
 function Copyright() {
   return (
@@ -40,7 +50,7 @@ function Copyright() {
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = (theme) => ({
   root: {
     display: 'flex',
   },
@@ -117,35 +127,109 @@ const useStyles = makeStyles((theme) => ({
   fixedHeight: {
     height: 240,
   },
-}));
+});
 
-export default function MainDashboardPage() {
-  const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+/*
+const [open, setOpen] = React.useState(true);
+    const handleDrawerOpen = () => {
+      setOpen(true);
+    };
+    const handleDrawerClose = () => {
+      setOpen(false);
+    };
+*/
 
-  return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
-        <Toolbar className={classes.toolbar}>
-          <IconButton
+class MainDashboardPage extends Component{
+  //const classes = useStyles();
+  
+  constructor(props) {
+    super(props);
+    this.state = {
+      isDrawerOpen: false,
+    };
+  }  
+  /*
+  hideAppbar() {
+    this.setState({
+      isDrawerOpen: false
+    });
+    console.log('hideAppBar is called : ' + this.state.isDrawerOpen)
+  }
+
+  showAppbar() {
+    this.setState({
+      isDrawerOpen: true
+    });
+    console.log('showAppBar is called : ' + this.state.isDrawerOpen)
+  }
+  */
+  handleDrawerOpen = () => {
+    this.setState({
+      isDrawerOpen: true
+    });
+    console.log('showAppBar is called : ' + this.state.isDrawerOpen)
+  };
+
+  handleDrawerClose = () => {
+    this.setState({
+      isDrawerOpen: false
+    });
+    console.log('hideAppBar is called : ' + this.state.isDrawerOpen)
+  };
+
+  renderAppBarIcon(className) {
+    
+    if (this.state.isDrawerOpen) {
+      return(
+        <IconButton
             edge="start"
             color="inherit"
             aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
+            onClick={this.handleDrawerClose}
+            className={className}
+            
+            //className={this.state.isDrawerOpen ? classes.menuButton : classes.menuButtonHidden }
+            //className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
+          >
+            <ArrowBackIcon />
+        </IconButton>
+      );
+      //return <ArrowBackIcon />
+    } else{
+      return(
+        <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="open drawer"
+            onClick={this.handleDrawerOpen}
+            className={className}
           >
             <MenuIcon />
-          </IconButton>
+        </IconButton>
+      );
+      //return <MenuIcon /> 
+    }
+    
+  }
+
+  render() {
+    const { classes } = this.props;
+    const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+    return (
+    <div className={classes.root}>
+      <CssBaseline />
+      <AppBar 
+        //position="absolute" className={this.state.isDrawerOpen ? classes.appBar : classes.appBarShift}
+        position="absolute" 
+        className={classes.appBar}
+        //className={clsx(classes.appBar, this.state.isDrawerOpen && classes.appBarShift)}
+      >
+        <Toolbar className={classes.toolbar}>
+          {
+              this.renderAppBarIcon(classes.menuButton)
+          }
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-            MainDashboardPage
+            #Dashboard#
           </Typography>
           <IconButton color="inherit">
             <Badge badgeContent={4} color="secondary">
@@ -156,13 +240,30 @@ export default function MainDashboardPage() {
       </AppBar>
       <Drawer
         variant="permanent"
+        
         classes={{
-          paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+          paper: clsx(classes.drawerPaper, !this.state.isDrawerOpen && classes.drawerPaperClose),
         }}
-        open={open}
+        /*
+        classes={
+          this.state.isDrawerOpen ? classes.drawerPaper : classes.drawerPaperClose
+        }
+        */
+        open={this.state.isDrawerOpen}
+        //open={open}
       >
         <div className={classes.toolbarIcon}>
-          <IconButton onClick={handleDrawerClose}>
+          <IconButton 
+          onClick={this.handleDrawerClose}
+          /*
+            onClick={
+              () => {
+                  this.hideAppbar()
+              }
+            //handleDrawerClose
+            }
+            */
+          >
             <ChevronLeftIcon />
           </IconButton>
         </div>
@@ -201,4 +302,11 @@ export default function MainDashboardPage() {
       </main>
     </div>
   );
-}
+  }  
+};
+
+MainDashboardPage.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withRouter(connect()(withStyles(useStyles)(MainDashboardPage)))
